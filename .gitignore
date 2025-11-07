@@ -1,0 +1,16 @@
+# Node
+cinema-booking-client/node_modules/
+cinema-booking-client/dist/
+cinema-booking-client/.env
+
+# .NET
+cinema-booking-server/cinema-booking-server/bin/
+cinema-booking-server/cinema-booking-server/obj/
+cinema-booking-server/cinema-booking-server/appsettings.Development.json
+cinema-booking-server/cinema-booking-server/*.user
+cinema-booking-server/.vs/
+
+# Common
+*.log
+.env
+.DS_Store
