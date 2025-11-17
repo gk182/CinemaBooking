@@ -135,38 +135,92 @@ namespace cinema_booking_server.Services.Implementations
 
         public async Task<LoginResponseDTO> RefreshTokenAsync(string refreshToken)
         {
-            // TODO: Implement refresh token logic
-            throw new NotImplementedException();
-        }
+            if (string.IsNullOrWhiteSpace(refreshToken))
+                throw new UnauthorizedAccessException("Invalid refresh token");
 
-        public async Task<bool> ValidateTokenAsync(string token)
-        {
-            try
+            var tokenEntry = await _context.RefreshTokens
+                .Include(rt => rt.User)
+                .ThenInclude(u => u.Role)
+                .FirstOrDefaultAsync(rt => rt.Token == refreshToken);
+
+            if (tokenEntry == null)
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_configuration["JwtSettings:SecretKey"]);
+                _logger.LogWarning("Refresh token not found");
+                throw new UnauthorizedAccessException("Invalid refresh token");
+            }
 
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
+            if (tokenEntry.RevokedAt.HasValue || tokenEntry.ExpiresAt <= DateTimeOffset.UtcNow)
+            {
+                _logger.LogWarning("Refresh token expired or revoked");
+                throw new UnauthorizedAccessException("Refresh token expired or revoked");
+            }
+
+            var user = tokenEntry.User;
+            if (user == null)
+            {
+                _logger.LogWarning("Refresh token has no associated user");
+                throw new UnauthorizedAccessException("Invalid refresh token");
+            }
+
+            // Generate new tokens
+            var newJwt = GenerateJwtToken(user);
+            var newRefresh = GenerateRefreshToken();
+            var refreshExpiryDays = int.Parse(_configuration["JwtSettings:RefreshTokenExpiryDays"] ?? "7");
+
+            // Revoke old token and set replacement
+            tokenEntry.RevokedAt = DateTimeOffset.UtcNow;
+            tokenEntry.ReplacedByToken = newRefresh;
+
+            // Create new refresh token record
+            var newRefreshToken = new RefreshToken
+            {
+                UserId = user.Id,
+                Token = newRefresh,
+                ExpiresAt = DateTimeOffset.UtcNow.AddDays(refreshExpiryDays),
+                CreatedAt = DateTimeOffset.UtcNow
+            };
+
+            _context.RefreshTokens.Add(newRefreshToken);
+            await _context.SaveChangesAsync();
+
+            return new LoginResponseDTO
+            {
+                Token = newJwt,
+                RefreshToken = newRefresh,
+                User = new UserDTO
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
-                }, out SecurityToken validatedToken);
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+                    Id = user.Id.ToString(),
+                    Email = user.Email,
+                    FullName = user.FullName,
+                    Phone = user.Phone,
+                    Role = user.Role?.Name ?? "Customer",
+                    CreatedAt = user.CreatedAt.DateTime
+                }
+            };
         }
 
         public async Task LogoutAsync(string userId)
         {
-            // TODO: Implement logout logic (invalidate token)
-            _logger.LogInformation($"User {userId} logged out");
+            if (string.IsNullOrWhiteSpace(userId))
+                return;
+
+            if (!Guid.TryParse(userId, out var uid))
+            {
+                _logger.LogWarning("Invalid userId passed to LogoutAsync: {UserIdStr}", userId);
+                return;
+            }
+
+            var tokens = await _context.RefreshTokens
+                .Where(rt => rt.UserId == uid && rt.RevokedAt == null && rt.ExpiresAt > DateTimeOffset.UtcNow)
+                .ToListAsync();
+
+            foreach (var t in tokens)
+            {
+                t.RevokedAt = DateTimeOffset.UtcNow;
+            }
+
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Revoked {Count} refresh tokens for user {UserId}", tokens.Count, userId);
         }
 
         public async Task<ChangePasswordResponseDTO> ChangePasswordAsync(string userId, ChangePasswordRequestDTO request)
@@ -256,6 +310,11 @@ namespace cinema_booking_server.Services.Implementations
         {
             var hashOfInput = HashPassword(password);
             return hashOfInput == hash;
+        }
+
+        public Task<bool> ValidateTokenAsync(string token)
+        {
+            throw new NotImplementedException();
         }
     }
 }

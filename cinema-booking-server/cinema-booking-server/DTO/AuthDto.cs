@@ -38,6 +38,19 @@ namespace cinema_booking_server.DTOs
         public UserDTO User { get; set; }
     }
 
+    // New DTOs for refresh
+    public class RefreshTokenRequestDTO
+    {
+        [Required]
+        public string RefreshToken { get; set; }
+    }
+
+    public class RefreshTokenResponseDTO
+    {
+        public string Token { get; set; }
+        public string RefreshToken { get; set; }
+    }
+
     public class UserDTO
     {
         public string Id { get; set; }
