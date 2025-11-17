@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Film, 
@@ -13,18 +13,26 @@ import {
   Moon
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-
-// interface HeaderProps {
-//   darkMode?: boolean;
-//   toggleDarkMode?: () => void;
-// }
-import { useTheme } from '../../context/ThemeContext'; // đường dẫn tuỳ bạn
+import { useTheme } from '../../context/ThemeContext';
 
 const Header = () => {
   const { darkMode, toggleDarkMode } = useTheme();
   const { user, logout } = useAuth();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // --- Detect Scroll ---
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navLinks = [
     { label: 'Movies', href: '/' },
@@ -33,14 +41,18 @@ const Header = () => {
   ];
 
   return (
-<header
-  className="fixed top-0 left-0 w-full z-50 
-  backdrop-blur-lg bg-white/20 dark:bg-gray-900/20 
-  border-b border-white/10 dark:border-gray-700/20 
-  transition-all duration-300"
->
+    <header
+      className={`
+        fixed top-0 left-0 w-full z-50 transition-all duration-300
+        ${isScrolled 
+          ? "backdrop-blur-xl bg-white/30 dark:bg-gray-900/30 border-b border-white/20 dark:border-gray-700/20 shadow-sm"
+          : "bg-transparent border-none"
+        }
+      `}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
+
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
             <Film className="w-8 h-8 text-red-600" />
@@ -64,6 +76,7 @@ const Header = () => {
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-3">
+
             {/* Dark Mode Toggle */}
             {toggleDarkMode && (
               <button
@@ -94,7 +107,6 @@ const Header = () => {
                   </span>
                 </button>
 
-                {/* Dropdown Menu */}
                 {userMenuOpen && (
                   <>
                     <div 
