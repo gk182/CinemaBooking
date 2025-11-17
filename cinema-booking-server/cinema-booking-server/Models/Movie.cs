@@ -57,5 +57,6 @@ namespace cinema_booking_server.Models
 
         // Navigation properties
         public ICollection<Showtime> Showtimes { get; set; } = new List<Showtime>();
+        public DateTimeOffset UpdatedAt { get; internal set; }
     }
 }

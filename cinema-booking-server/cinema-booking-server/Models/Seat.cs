@@ -34,5 +34,6 @@ namespace cinema_booking_server.Models
         public Room? Room { get; set; }
         public ICollection<BookingSeat> BookingSeats { get; set; } = new List<BookingSeat>();
         public ICollection<ShowtimeSeatStatus> ShowtimeSeatStatuses { get; set; } = new List<ShowtimeSeatStatus>();
+        public DateTimeOffset CreatedAt { get; internal set; }
     }
 }

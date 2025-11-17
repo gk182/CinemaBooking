@@ -21,18 +21,28 @@ namespace cinema_booking_server.Services.Implementations
 
         public async Task<IEnumerable<MovieDTO>> GetAllMoviesAsync()
         {
-            return await _context.Movies
-                .Select(m => new MovieDTO
-                {
-                    Id = m.Id,
-                    Title = m.Title,
-                    Description = m.Description,
-                    DurationMinutes = m.DurationMinutes,
-                    ReleaseDate = m.ReleaseDate,
-                    Status = m.Status
-                })
-                .ToListAsync();
+            var movies = await _context.Movies.ToListAsync(); // Lấy dữ liệu ra memory
+
+            return movies.Select(m => new MovieDTO
+            {
+                Id = m.Id,
+                Title = m.Title,
+                Description = m.Description,
+                PosterUrl = m.PosterUrl,
+                BannerUrl = m.BannerUrl,
+                TrailerUrl = m.TrailerUrl,
+                DurationMinutes = m.DurationMinutes,
+                ReleaseDate = m.ReleaseDate,
+                Genres = m.Genres != null ? m.Genres.Split(',').ToList() : null,
+                Rating = m.Rating,
+                Language = m.Language,
+                Director = m.Director,
+                Cast = m.Cast != null ? m.Cast.Split(',').ToList() : null,
+                AgeRating = m.AgeRating,
+                Status = m.Status
+            });
         }
+
 
         public async Task<MovieDTO> GetMovieByIdAsync(Guid id)
         {
@@ -44,8 +54,17 @@ namespace cinema_booking_server.Services.Implementations
                 Id = movie.Id,
                 Title = movie.Title,
                 Description = movie.Description,
+                PosterUrl = movie.PosterUrl,
+                BannerUrl = movie.BannerUrl,
+                TrailerUrl = movie.TrailerUrl,
                 DurationMinutes = movie.DurationMinutes,
                 ReleaseDate = movie.ReleaseDate,
+                Genres = movie.Genres?.Split(',').ToList(),
+                Rating = movie.Rating,
+                Language = movie.Language,
+                Director = movie.Director,
+                Cast = movie.Cast?.Split(',').ToList(),
+                AgeRating = movie.AgeRating,
                 Status = movie.Status
             };
         }
@@ -54,11 +73,19 @@ namespace cinema_booking_server.Services.Implementations
         {
             var movie = new Movie
             {
-                Id = Guid.NewGuid(),
                 Title = dto.Title,
                 Description = dto.Description,
+                PosterUrl = dto.PosterUrl,
+                BannerUrl = dto.BannerUrl,
+                TrailerUrl = dto.TrailerUrl,
                 DurationMinutes = dto.DurationMinutes,
                 ReleaseDate = dto.ReleaseDate,
+                Genres = dto.Genres != null ? string.Join(',', dto.Genres) : null,
+                Rating = dto.Rating,
+                Language = dto.Language,
+                Director = dto.Director,
+                Cast = dto.Cast != null ? string.Join(',', dto.Cast) : null,
+                AgeRating = dto.AgeRating,
                 Status = dto.Status
             };
 
@@ -70,8 +97,17 @@ namespace cinema_booking_server.Services.Implementations
                 Id = movie.Id,
                 Title = movie.Title,
                 Description = movie.Description,
+                PosterUrl = movie.PosterUrl,
+                BannerUrl = movie.BannerUrl,
+                TrailerUrl = movie.TrailerUrl,
                 DurationMinutes = movie.DurationMinutes,
                 ReleaseDate = movie.ReleaseDate,
+                Genres = movie.Genres?.Split(',').ToList(),
+                Rating = movie.Rating,
+                Language = movie.Language,
+                Director = movie.Director,
+                Cast = movie.Cast?.Split(',').ToList(),
+                AgeRating = movie.AgeRating,
                 Status = movie.Status
             };
         }
@@ -81,11 +117,20 @@ namespace cinema_booking_server.Services.Implementations
             var movie = await _context.Movies.FindAsync(id);
             if (movie == null) return null;
 
-            movie.Title = dto.Title ?? movie.Title;
-            movie.Description = dto.Description ?? movie.Description;
-            movie.DurationMinutes = dto.DurationMinutes ?? movie.DurationMinutes;
-            movie.ReleaseDate = dto.ReleaseDate ?? movie.ReleaseDate;
-            movie.Status = dto.Status ?? movie.Status;
+            if (dto.Title != null) movie.Title = dto.Title;
+            if (dto.Description != null) movie.Description = dto.Description;
+            if (dto.PosterUrl != null) movie.PosterUrl = dto.PosterUrl;
+            if (dto.BannerUrl != null) movie.BannerUrl = dto.BannerUrl;
+            if (dto.TrailerUrl != null) movie.TrailerUrl = dto.TrailerUrl;
+            if (dto.DurationMinutes.HasValue) movie.DurationMinutes = dto.DurationMinutes;
+            if (dto.ReleaseDate.HasValue) movie.ReleaseDate = dto.ReleaseDate;
+            if (dto.Genres != null) movie.Genres = string.Join(',', dto.Genres);
+            if (dto.Rating.HasValue) movie.Rating = dto.Rating;
+            if (dto.Language != null) movie.Language = dto.Language;
+            if (dto.Director != null) movie.Director = dto.Director;
+            if (dto.Cast != null) movie.Cast = string.Join(',', dto.Cast);
+            if (dto.AgeRating != null) movie.AgeRating = dto.AgeRating;
+            if (dto.Status != null) movie.Status = dto.Status;
 
             await _context.SaveChangesAsync();
 
@@ -94,8 +139,17 @@ namespace cinema_booking_server.Services.Implementations
                 Id = movie.Id,
                 Title = movie.Title,
                 Description = movie.Description,
+                PosterUrl = movie.PosterUrl,
+                BannerUrl = movie.BannerUrl,
+                TrailerUrl = movie.TrailerUrl,
                 DurationMinutes = movie.DurationMinutes,
                 ReleaseDate = movie.ReleaseDate,
+                Genres = movie.Genres?.Split(',').ToList(),
+                Rating = movie.Rating,
+                Language = movie.Language,
+                Director = movie.Director,
+                Cast = movie.Cast?.Split(',').ToList(),
+                AgeRating = movie.AgeRating,
                 Status = movie.Status
             };
         }

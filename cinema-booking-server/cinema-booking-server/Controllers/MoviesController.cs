@@ -1,4 +1,6 @@
 ﻿
+using cinema_booking_server.DTOs;
+using cinema_booking_server.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
