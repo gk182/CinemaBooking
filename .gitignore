@@ -7,6 +7,9 @@ cinema-booking-client/.env
 cinema-booking-server/cinema-booking-server/bin/
 cinema-booking-server/cinema-booking-server/obj/
 cinema-booking-server/cinema-booking-server/appsettings.Development.json
+cinema-booking-server/cinema-booking-server/appsettings.json
+
+
 cinema-booking-server/cinema-booking-server/*.user
 cinema-booking-server/.vs/
 
