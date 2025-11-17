@@ -22,6 +22,9 @@ namespace cinema_booking_server.Data
         public DbSet<ShowtimeSeatStatus> ShowtimeSeatStatuses { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
 
+        // Add RefreshTokens DbSet
+        public DbSet<cinema_booking_server.Models.RefreshToken> RefreshTokens { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -34,6 +37,17 @@ namespace cinema_booking_server.Data
             modelBuilder.Entity<ShowtimeSeatStatus>()
                 .HasIndex(s => new { s.ShowtimeId, s.RowLabel, s.SeatNumber })
                 .IsUnique();
+
+            // Configure RefreshToken
+            modelBuilder.Entity<cinema_booking_server.Models.RefreshToken>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.Token).IsUnique();
+                entity.HasOne(e => e.User)
+                      .WithMany() // keep it loose if User nav prop not present
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
         }
     }
 }
