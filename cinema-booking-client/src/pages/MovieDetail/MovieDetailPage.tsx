@@ -12,8 +12,9 @@ import Button from '../../components/common/Button';
 import type { Movie } from '../../interfaces/Movie';
 import type { Showtime } from '../../interfaces/Showtime';
 import type { Cinema } from '../../interfaces/Cinema';
+import  { movieApi }  from '../../api/movieApi';
 
-import { mockMovies } from '../../assets/mock/movies';
+// import { mockMovies } from '../../assets/mock/movies';
 
 const MovieDetailPage = () => {
   const { id } = useParams();
@@ -37,14 +38,13 @@ const MovieDetailPage = () => {
   const fetchMovieDetails = async (movieId: string) => {
     try {
       setLoading(true);
-      // TODO: Replace with actual API call
-      // const response = await movieApi.getById(movieId);
-      
       // Mock data
-      const mockMovie = mockMovies.find(m => m.id === movieId);
-      if (mockMovie) {
-        setMovie(mockMovie as Movie);
-      }
+      // const mockMovie = mockMovies.find(m => m.id === movieId);
+      // if (mockMovie) {
+      //   setMovie(mockMovie as Movie);
+      // }
+      const data = await movieApi.getById(movieId);
+      setMovie(data);
     } catch (error) {
       console.error('Failed to fetch movie:', error);
     } finally {
