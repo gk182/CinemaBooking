@@ -19,8 +19,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Dependency Injection
 builder.Services.AddScoped<IMovieService, MovieService>();
-builder.Services.AddScoped<IAuthService, AuthService>();  // Thêm dòng này
-
+builder.Services.AddScoped<IAuthService, AuthService>();  
+builder.Services.AddScoped<ICinemaService, CinemaService>();
+builder.Services.AddScoped<IRoomService, RoomService>();
+// ...existing code...
 
 // --------------------------------------------------
 // CORS
