@@ -3,10 +3,6 @@ using cinema_booking_server.Models;
 using cinema_booking_server.Services.Interfaces;
 using cinema_booking_server.DTOs;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace cinema_booking_server.Services.Implementations
 {

@@ -1,8 +1,4 @@
-using cinema_booking_server.Models;
 using cinema_booking_server.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace cinema_booking_server.Services.Interfaces
 {
