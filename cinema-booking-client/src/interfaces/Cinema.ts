@@ -4,24 +4,27 @@ export interface Cinema {
   address: string;
   city: string;
   phone: string;
-  rooms: Room[];
+  rooms?: Room[];
+  createdAt?: string;
 }
 
 export interface Room {
   id: string;
   cinemaId: string;
   name: string;
-  capacity: number;
-  rows: number;
+  rowsCount: number;
   seatsPerRow: number;
-  seatMap: Seat[][];
+  capacity: number;
+  description?: string;
+  seats?: Seat[];
+  createdAt?: string;
 }
 
 export interface Seat {
   id: string;
-  row: string;
-  number: number;
-  type: 'standard' | 'vip' | 'couple';
-  status: 'available' | 'selected' | 'sold' | 'blocked';
+  rowLabel: string;
+  seatNumber: number;
+  seatType: 'standard' | 'vip' | 'couple';
   price: number;
+  isBlocked: boolean;
 }

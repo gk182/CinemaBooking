@@ -13,6 +13,8 @@ namespace cinema_booking_server.DTOs
         public string? Phone { get; set; }
         public bool IsActive { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
+        public List<RoomDTO> Rooms { get; set; } = [];   
+
     }
 
     public class CreateCinemaDTO

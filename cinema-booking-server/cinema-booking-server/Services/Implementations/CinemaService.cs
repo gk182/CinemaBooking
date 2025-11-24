@@ -20,6 +20,7 @@ namespace cinema_booking_server.Services.Implementations
         public async Task<IEnumerable<CinemaDTO>> GetAllCinemaAsync()
         {
             return await _context.Cinemas
+                .Include(c => c.Rooms)
                 .Select(c => new CinemaDTO
                 {
                     Id = c.Id,
@@ -28,7 +29,17 @@ namespace cinema_booking_server.Services.Implementations
                     City = c.City,
                     Phone = c.Phone,
                     IsActive = c.IsActive,
-                    CreatedAt = c.CreatedAt
+                    CreatedAt = c.CreatedAt,
+                    // Tối ưu lại băằng api bên frontend
+                    Rooms = c.Rooms.Select(r => new RoomDTO
+                    {
+                        Id = r.Id,
+                        CinemaId = r.CinemaId,
+                        Name = r.Name,
+                        RowsCount = r.RowsCount,
+                        SeatsPerRow = r.SeatsPerRow,
+                        Description = r.Description
+                    }).ToList()
                 })
                 .ToListAsync();
         }
