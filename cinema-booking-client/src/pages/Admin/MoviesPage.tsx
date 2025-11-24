@@ -11,7 +11,7 @@ import Pagination from '../../components/common/Pagination';
 import { useModal } from '../../hooks/useModal';
 import { useDebounce } from '../../hooks/useDebounce';
 import type { Movie } from '../../interfaces/Movie';
-import { mockMovies } from '../../assets/mock/movies.ts';
+import { movieApi } from '../../api/movieApi.ts';
 
 const MoviesPage = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -39,9 +39,8 @@ const MoviesPage = () => {
     try {
       // TODO: Replace with actual API call
       // const data = await movieApi.getAll();
-      
-      // Using mock data
-      setMovies(mockMovies);
+      const movies = await movieApi.getAll();
+      setMovies(movies);
     } catch (error) {
       console.error('Failed to fetch movies:', error);
     } finally {
@@ -84,6 +83,7 @@ const MoviesPage = () => {
     
     try {
       // await movieApi.delete(movieId);
+      await movieApi.delete(movieId);
       alert('Movie deleted successfully');
       fetchMovies();
     } catch (error) {
@@ -95,9 +95,13 @@ const MoviesPage = () => {
     try {
       if (editingMovie) {
         // await movieApi.update(editingMovie.id, data);
+        await movieApi.update(editingMovie.id,data);
         alert('Movie updated successfully!');
       } else {
         // await movieApi.create(data);
+        console.log(data);
+        await movieApi.create(data);
+        
         alert('Movie created successfully!');
       }
       formModal.close();
@@ -220,7 +224,7 @@ const MoviesPage = () => {
             },
             {
               header: 'Duration',
-              accessor: (row) => `${row.duration} min`
+              accessor: (row) => `${row.durationMinutes} min`
             },
             {
               header: 'Rating',

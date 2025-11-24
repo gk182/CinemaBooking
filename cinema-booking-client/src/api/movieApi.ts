@@ -34,43 +34,6 @@ export const movieApi = {
   },
 
   /**
-   * Search movies
-   */
-  search: async (query: string, filters?: MovieFilters): Promise<MovieListResponse> => {
-    return api.get('/movies/search', { 
-      params: { q: query, ...filters } 
-    });
-  },
-
-  /**
-   * Get now showing movies
-   */
-  getNowShowing: async (page = 1, limit = 10): Promise<MovieListResponse> => {
-    return api.get('/movies/now-showing', { params: { page, limit } });
-  },
-
-  /**
-   * Get coming soon movies
-   */
-  getComingSoon: async (page = 1, limit = 10): Promise<MovieListResponse> => {
-    return api.get('/movies/coming-soon', { params: { page, limit } });
-  },
-
-  /**
-   * Get top rated movies
-   */
-  getTopRated: async (limit = 10): Promise<Movie[]> => {
-    return api.get('/movies/top-rated', { params: { limit } });
-  },
-
-  /**
-   * Get movie genres
-   */
-  getGenres: async (): Promise<string[]> => {
-    return api.get('/movies/genres');
-  },
-
-  /**
    * Admin: Create movie
    */
   create: async (data: Partial<Movie>): Promise<Movie> => {

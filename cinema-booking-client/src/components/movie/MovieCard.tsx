@@ -66,7 +66,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
         <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
           <div className="flex items-center gap-1">
             <Clock className="w-4 h-4" />
-            <span>{movie.duration} min</span>
+            <span>{movie.durationMinutes} min</span>
           </div>
           <div className="flex items-center gap-1">
             <Calendar className="w-4 h-4" />

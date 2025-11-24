@@ -16,21 +16,30 @@ const MovieForm = ({ movie, onSubmit, onCancel }: MovieFormProps) => {
     title: movie?.title || '',
     description: movie?.description || '',
     posterUrl: movie?.posterUrl || '',
-    duration: movie?.duration || 0,
-    releaseDate: movie?.releaseDate || '',
+    bannerUrl: movie?.bannerUrl || '',
+    trailerUrl: movie?.trailerUrl || '',
+    durationMinutes: movie?.durationMinutes || 0,
+    releaseDate: movie?.releaseDate ? movie.releaseDate.split("T")[0]  : '',
     genres: movie?.genres || [],
     rating: movie?.rating || 0,
     language: movie?.language || '',
     director: movie?.director || '',
+    cast: movie?.cast ? movie.cast.join(', ') : '',
     ageRating: movie?.ageRating || 'PG',
-    status: movie?.status || 'now_showing'
+    status: movie?.status || 'coming_soon'
   });
 
   const genreOptions = ['Action', 'Comedy', 'Drama', 'Horror', 'Sci-Fi', 'Romance', 'Thriller', 'Adventure'];
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+      const payload = {
+        ...formData,
+        releaseDate: formData.releaseDate ? new Date(formData.releaseDate).toISOString() : null,
+        cast: formData.cast ? formData.cast.split(',').map(s => s.trim()).filter(Boolean) : []
+      };
+
+    onSubmit(payload);
   };
 
   const toggleGenre = (genre: string) => {
@@ -60,10 +69,18 @@ const MovieForm = ({ movie, onSubmit, onCancel }: MovieFormProps) => {
         />
 
         <Input
+          label="Cast"
+          value={formData.cast}
+          onChange={(e) => setFormData({ ...formData, cast: e.target.value })}
+          placeholder="Actor A, Actor B, Actor C"
+          required
+        />
+
+        <Input
           label="Duration (minutes)"
           type="number"
-          value={formData.duration}
-          onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) })}
+          value={formData.durationMinutes}
+          onChange={(e) => setFormData({ ...formData, durationMinutes: parseInt(e.target.value) })}
           required
         />
 
@@ -128,6 +145,20 @@ const MovieForm = ({ movie, onSubmit, onCancel }: MovieFormProps) => {
         value={formData.posterUrl}
         onChange={(e) => setFormData({ ...formData, posterUrl: e.target.value })}
         placeholder="https://example.com/poster.jpg"
+      />
+
+      <Input
+        label="Banner URL"
+        value={formData.bannerUrl}
+        onChange={(e) => setFormData({ ...formData, bannerUrl: e.target.value })}
+        placeholder="https://example.com/banner.jpg"
+      />
+
+      <Input
+        label="Trailer URL"
+        value={formData.trailerUrl}
+        onChange={(e) => setFormData({ ...formData, trailerUrl: e.target.value })}
+        placeholder="https://example.com/trailer.jpg"
       />
 
       <div>

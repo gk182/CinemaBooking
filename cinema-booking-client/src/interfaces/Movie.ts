@@ -5,7 +5,7 @@ export interface Movie {
   posterUrl: string;
   bannerUrl?: string;
   trailerUrl?: string;
-  duration: number; // in minutes
+  durationMinutes: number; // in minutes
   releaseDate: string;
   genres: string[];
   rating: number; // 0-10

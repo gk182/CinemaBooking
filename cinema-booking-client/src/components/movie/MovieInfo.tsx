@@ -8,7 +8,7 @@ interface MovieInfoProps {
 const MovieInfo = ({ movie }: MovieInfoProps) => {
   const infoItems = [
     { icon: Calendar, label: 'Release Date', value: new Date(movie.releaseDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) },
-    { icon: Clock, label: 'Duration', value: `${movie.duration} minutes` },
+    { icon: Clock, label: 'Duration', value: `${movie.durationMinutes} minutes` },
     { icon: User, label: 'Director', value: movie.director },
     { icon: Film, label: 'Language', value: movie.language }
   ];
